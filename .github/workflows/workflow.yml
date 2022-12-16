@@ -27,6 +27,13 @@ jobs:
       - name: Branch name
         run: echo running on branch ${{ github.ref }}
 
+      # List all files
+      - name: List files
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
+          echo $FILES
+
       # Runs a set of commands
       - uses: actions/setup-python@v4
         with:
@@ -35,17 +42,3 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: pip install scikit-learn
-        
-      - name: Fetch action
-        id: one
-        uses: Rishabh510/Path-lister-action@master
-        with:
-          path: "./"
-          type: ".csv"
-
-      - name: Output results
-        run: |
-          echo "Found ${{ steps.pl.outputs.path_count }} file(s) with this extension:"
-          for i in ${{ steps.pl.outputs.paths }}; do
-          echo $i
-          done
