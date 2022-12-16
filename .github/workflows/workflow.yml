@@ -22,24 +22,16 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+      
+      # print branch name
+      - name: Branch name
+        run: echo running on branch ${{ github.ref }}
 
       # Runs a set of commands
       - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-      - uses: jannekem/run-python-script-action@v1.5
-        id: script
-        with:
-          fail-on-error: false
-          script: |
-            print("Doing something that will fail")
-            a = []
-            a[10]
-      - name: Print errors
-        if: steps.script.outputs.error == 'true'
-        run: |
-          printenv "SCRIPT_STDOUT"
-          printenv "SCRIPT_STDERR"
-        env:
-          SCRIPT_STDOUT: ${{ steps.script.outputs.stdout }}
-          SCRIPT_STDERR: ${{ steps.script.outputs.stderr }}
+          
+      # Install dependencies
+      - name: Install dependencies
+        run: pip install scikit-learn
