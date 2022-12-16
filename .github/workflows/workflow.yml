@@ -35,3 +35,17 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: pip install scikit-learn
+        
+      - name: Fetch action
+        id: one
+        uses: Rishabh510/Path-lister-action@master
+        with:
+          path: "./"
+          type: ".csv"
+
+      - name: Output results
+        run: |
+          echo "Found ${{ steps.pl.outputs.path_count }} file(s) with this extension:"
+          for i in ${{ steps.pl.outputs.paths }}; do
+          echo $i
+          done
