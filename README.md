@@ -34,3 +34,10 @@ They have provided multiple attributes around Employee's past and current perfor
 ## Evaluation Metric
 
 The evaluation metric for this competition is F1 Score.
+
+## Expected Outcome
+
+1. Predictions on test.csv in sample_submission.csv format.
+2. An EDA report with your findings in the dataset (can be any format html, pdf, docx etc. but not jupyter notebooks)
+3. List of top 5 important features
+
