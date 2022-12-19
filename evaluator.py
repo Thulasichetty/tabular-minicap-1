@@ -1,8 +1,12 @@
+import os
 import pandas as pd
 import argparse
 from cryptography.fernet import Fernet
 from io import StringIO
 from sklearn.metrics import f1_score
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def main(key):
@@ -42,8 +46,6 @@ def main(key):
 
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser()
-	parser.add_argument("-k", "--key", required=True)
-	args = parser.parse_args()
-	result = main(args.key)
-	print(result)
+	key = os.environ['encryption_key']
+	result = main(key)
+	print(f"[{result}]")
