@@ -27,13 +27,6 @@ jobs:
       - name: Branch name
         run: echo running on branch ${{ github.ref }}
 
-      # List all files
-      - name: List files
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
-          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
-          echo $FILES
-
       # Runs a set of commands
       - uses: actions/setup-python@v4
         with:
@@ -41,4 +34,19 @@ jobs:
           
       # Install dependencies
       - name: Install dependencies
-        run: pip install scikit-learn
+        run: pip install -r requirements.txt
+
+      # execute python script
+      - name: execute evaluator.py
+        run: |
+          echo "EVALUATION_RESULT=$(echo $(python evaluator.py))" >> $GITHUB_ENV
+        env:
+          encryption_key: ${{ secrets.ENCRYPTION_KEY }}
+
+      - name: Update PR title
+        run: |
+          RESULT="${EVALUATION_RESULT}"
+          OLD_TITLE="${{ github.event.pull_request.title }}"
+          NEW_TITLE="${RESULT} ${OLD_TITLE}"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}"
+          RESPONSE=$(curl -X PATCH -u NeerajSarwan:${{ secrets.GH_PERSONAL_ACCESS_TOKEN }} -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" $URL -d '{"title":"'"${NEW_TITLE}"'","base":"main"}')
